@@ -1,2 +1,92 @@
----
-# defaults file for insspb.odoo
+odoo_wkhtmltox_version: "0.12.2"      # Download URLs available in the
+                                      # 'odoo_wkhtmltox_urls' variable
+                                      # (see 'vars/main.yml')
+odoo_instances: []       
+default_odoo_service: odoo
+default_odoo_version: 9.0
+default_odoo_user: odoo
+default_odoo_user_passwd: odoo
+default_odoo_user_system: yes
+default_odoo_logdir: "/var/log/{{ item.odoo_user | default(default_odoo_user) }}"
+default_odoo_workdir: "/home/{{ item.odoo_user | default(default_odoo_user) }}/odoo"
+default_odoo_rootdir: "/home/{{ item.odoo_user | default(default_odoo_user) }}/odoo/server"
+default_odoo_init: True
+default_odoo_init_env: {}
+    #VAR1: value1
+    #VAR2: value2
+default_odoo_config_file: "/home/{{ item.odoo_user | default(default_odoo_user) }}/{{ item.odoo_service | default(default_odoo_service) }}.conf"
+default_odoo_force_config: True
+default_odoo_repo_url: "https://github.com/odoo/odoo.git"
+default_odoo_repo_dest: "{{ item.odoo_rootdir | default(default_odoo_rootdir) }}"
+default_odoo_repo_rev: "{{ item.odoo_version | default(default_odoo_version) }}"
+default_odoo_repo_update: True   # Update the working copy or not. This option is
+                                 # ignored on the first run (a checkout of the working
+                                 # copy is always processed on the given revision)
+                                 # WARNING: uncommited changes will be discarded!
+default_odoo_repo_depth: 1       # Set to 0 to clone the full history (slower)
+                                 # (this option is not supported with hg)
+# Tasks related to PostgreSQL
+default_odoo_postgresql_set_user: True
+default_odoo_postgresql_user_role_attr: "CREATEDB,NOSUPERUSER"
+default_odoo_postgresql_active_unaccent: True
+# Configuration options
+default_odoo_config_addons_path:
+    - "/home/{{ item.odoo_user | default(default_odoo_user) }}/odoo/server/openerp/addons"
+    - "/home/{{ item.odoo_user | default(default_odoo_user) }}/odoo/server/addons"
+default_odoo_config_admin_passwd: admin
+default_odoo_config_auto_reload: False
+default_odoo_config_csv_internal_sep: ','
+default_odoo_config_data_dir: "/home/{{ item.odoo_user | default(default_odoo_user) }}/.local/share/Odoo"
+default_odoo_config_db_host: "review-db1.anovatio.local"
+default_odoo_config_db_host_user: "{{ ansible_user_id }}"
+default_odoo_config_db_maxconn: 64
+default_odoo_config_db_name: "{{ item.odoo_service | default(default_odoo_service) }}"
+default_odoo_config_db_passwd: "{{ item.odoo_user_passwd | default(default_odoo_user_passwd) }}"
+default_odoo_config_db_port: False
+default_odoo_config_db_template: template1
+default_odoo_config_db_user: "{{ item.odoo_user | default(default_odoo_user) }}"
+default_odoo_config_dbfilter: '.*'
+default_odoo_config_debug_mode: False
+default_odoo_config_pidfile: None
+default_odoo_config_proxy_mode: False
+default_odoo_config_email_from: False
+default_odoo_config_geoip_database: /usr/share/GeoIP/GeoLiteCity.dat
+default_odoo_config_limit_memory_hard: 805306368
+default_odoo_config_limit_memory_soft: 671088640
+default_odoo_config_limit_time_cpu: 60
+default_odoo_config_limit_time_real: 120
+default_odoo_config_list_db: False
+default_odoo_config_log_db: False
+default_odoo_config_log_level: info
+default_odoo_config_logfile: None
+default_odoo_config_logrotate: False
+default_odoo_config_longpolling_port: 8072
+default_odoo_config_osv_memory_age_limit: 1.0
+default_odoo_config_osv_memory_count_limit: False
+default_odoo_config_max_cron_threads: 2
+default_odoo_config_secure_cert_file: server.cert
+default_odoo_config_secure_pkey_file: server.pkey
+default_odoo_config_server_wide_modules: None
+default_odoo_config_smtp_password: False
+default_odoo_config_smtp_port: 25
+default_odoo_config_smtp_server: localhost
+default_odoo_config_smtp_ssl: False
+default_odoo_config_smtp_user: False
+default_odoo_config_syslog: False
+default_odoo_config_timezone: False
+default_odoo_config_translate_modules: ['all']
+default_odoo_config_unaccent: False
+default_odoo_config_without_demo: False
+default_odoo_config_workers: 0
+default_odoo_config_xmlrpc: True
+default_odoo_config_xmlrpc_interface: ''
+default_odoo_config_xmlrpc_port: 8069
+default_odoo_config_xmlrpcs: True
+default_odoo_config_xmlrpcs_interface: ''
+default_odoo_config_xmlrpcs_port: 8071
+# Custom configuration options
+default_odoo_config_custom: {}
+    #your_option1: value1
+    #your_option2: value2
+# Extra options
+default_odoo_user_sshkeys: False    # ../../path/to/public_keys/*

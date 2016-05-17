@@ -1,0 +1,70 @@
+---
+
+- name: Odoo | Install | Install required tools
+  become: yes
+  apt:  
+    pkg: "{{ item }}"
+    state: installed
+    update_cache: yes
+  with_items: "{{ odoo_required_tools }}"
+
+- name: Odoo | Install | Install Odoo dependencies
+  become: yes
+  apt:  
+    pkg: "{{ item }}"
+    state: installed
+    update_cache: yes
+  with_items: "{{ odoo_debian_packages }}"
+
+- name: Odoo | Install | Install Odoo dependencies (PyPi)
+  become: yes
+  pip: 
+    name: "{{ item }}"
+  with_items: "{{ odoo_pypi_packages }}"
+
+- name: Odoo | Install | Add Odoo system user
+  become: yes
+  user: 
+    name: "{{ item.odoo_user | default(default_odoo_user) }}"
+    shell: "/bin/bash"
+    password: "{{ item.odoo_user_passwd | default(default_odoo_user_passwd) }}"
+    update_password: on_create
+    system: "{{ item.odoo_user_system | default(default_odoo_user_system) }}"
+  with_items: "{{ odoo_instances }}"
+
+- name: Odoo | Install | Create log directory
+  become: yes
+  file: 
+    path: "{{ item.odoo_logdir | default(default_odoo_logdir) }}"
+    state: directory
+    owner: "{{ item.odoo_user | default(default_odoo_user) }}"
+    group: "{{ item.odoo_user | default(default_odoo_user) }}"
+    force: no
+  with_items: "{{ odoo_instances }}"
+
+- name: Odoo | Install | Project repository already cloned?
+  stat: 
+    path: "{{ item.odoo_repo_dest | default(default_odoo_repo_dest) }}"
+  with_items: "{{ odoo_instances }}"
+  register: project_path
+
+- name: Odoo | Install | Clone project repository (Git)
+  become: yes
+  become_user: "{{ item.odoo_user | default(default_odoo_user) }}"
+  git:  
+    repo: "{{ item.odoo_repo_url | default(default_odoo_repo_url) }}"
+    dest: "{{ item.odoo_repo_dest | default(default_odoo_repo_dest) }}"
+    version: "{{ item.odoo_repo_rev  | default(default_odoo_repo_rev) | string }}"
+#    update: "{{ item.project_path.stat.exists == False and 'yes'
+#            or ({{ item.odoo_repo_update }} and 'yes' or 'no') }}"
+#    depth: "{{ item.odoo_repo_depth  | default(default_odoo_repo_depth) }}"
+  with_items: "{{ odoo_instances }}"
+  notify: Odoo | Handlers | Restart Odoo
+
+# Bugged:
+#- name: Set SSH public keys for the Odoo user
+#  authorized_key: user={{ odoo_user | default(default_odoo_user) }}
+#                  key="{{ lookup('file', item) }}"
+#  with_fileglob:
+#    - "{{ odoo_user_sshkeys }}"
+#  when: odoo_user_sshkeys is defined and odoo_user_sshkeys

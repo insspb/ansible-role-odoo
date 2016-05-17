@@ -1,0 +1,13 @@
+---
+
+- name: Odoo | Configuration | Generate Odoo configuration files
+  template: 
+    src: "odoo-{{ item.odoo_version | default(default_odoo_version) }}.conf"
+    dest: "{{ item.odoo_config_file | default(default_odoo_config_file) }}"
+    owner: "{{ item.odoo_user | default(default_odoo_user) }}"
+    group: "{{ item.odoo_user | default(default_odoo_user) }}"
+    mode: 0600
+    force: "{{ item.odoo_force_config | default(default_odoo_force_config) and 'yes' or 'no' }}"
+    backup: yes
+  with_items: "{{ odoo_instances }}"
+  notify: Odoo | Handlers | Restart Odoo

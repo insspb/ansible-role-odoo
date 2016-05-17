@@ -1,2 +1,11 @@
 ---
-# tasks file for insspb.odoo
+
+- include: install.yml
+
+- include: wkhtmltox.yml
+
+- include: config.yml
+
+#- include: postgresql.yml
+
+- include: service.yml  

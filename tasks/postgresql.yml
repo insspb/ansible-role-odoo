@@ -1,0 +1,63 @@
+- name: Remote PostgreSQL - Add the Odoo user
+  delegate_to: "{{ item.odoo_config_db_host | default(default_odoo_config_db_host) }}"
+  remote_user: "{{ item.odoo_config_db_host_user | default(default_odoo_config_db_host_user) }}"
+  become: yes
+  become_user: postgres
+  postgresql_user: name={{ item.odoo_config_db_user | default(default_odoo_config_db_user) }}
+                   role_attr_flags={{ item.odoo_postgresql_user_role_attr | default(default_odoo_postgresql_user_role_attr) }}
+  when: ( item.odoo_config_db_host | default(default_odoo_config_db_host) ) not in [False, 'localhost', '127.0.0.1']
+        and ( item.odoo_postgresql_set_user | default(default_odoo_postgresql_set_user) )
+  with_items: odoo_instances
+
+#- name: Local PostgreSQL - Add the Odoo user
+#  become: yes
+#  become_user: postgres
+#  postgresql_user: name={{ item.odoo_config_db_user | default(default_odoo_config_db_user) }}
+#                   role_attr_flags={{ item.odoo_postgresql_user_role_attr | default(default_odoo_postgresql_user_role_attr) }}
+#  when: ( item.odoo_config_db_host | default(default_odoo_config_db_host) ) in [False, 'localhost', '127.0.0.1']
+#        and ( item.odoo_postgresql_set_user | default(default_odoo_postgresql_set_user) )
+#  with_items: item.odoo_instances
+
+- name: Remote PostgreSQL - Set the Odoo user password
+  delegate_to: "{{ item.odoo_config_db_host | default(default_odoo_config_db_host) }}"
+  remote_user: "{{ item.odoo_config_db_host_user | default(default_odoo_config_db_host_user) }}"
+  become: yes
+  become_user: postgres
+  postgresql_user: name={{ item.odoo_config_db_user | default(default_odoo_config_db_user) }}
+                   password={{ item.odoo_config_db_passwd | default(default_odoo_config_db_passwd) }}
+  when: ( item.odoo_config_db_host | default(default_odoo_config_db_host) ) not in [False, 'localhost', '127.0.0.1']
+        and ( item.odoo_config_db_passwd | default(default_odoo_config_db_passwd) ) is defined 
+        and ( item.odoo_config_db_passwd | default(default_odoo_config_db_passwd) )
+        and ( item.odoo_postgresql_set_user | default(default_odoo_postgresql_set_user) )
+  with_items: odoo_instances
+
+#- name: Local PostgreSQL - Set the Odoo user password
+#  become: yes
+#  become_user: postgres
+#  postgresql_user: name={{ item.odoo_config_db_user | default(default_odoo_config_db_user) }}
+#                   password={{ item.odoo_config_db_passwd | default(default_odoo_config_db_passwd) }}
+#  when: ( item.odoo_config_db_host | default(default_odoo_config_db_host) ) in [False, 'localhost', '127.0.0.1']
+#        and ( item.odoo_config_db_passwd | default(default_odoo_config_db_passwd) ) is defined 
+#        and ( item.odoo_config_db_passwd | default(default_odoo_config_db_passwd) )
+#        and ( item.odoo_postgresql_set_user | default(default_odoo_postgresql_set_user) )
+#  with_items: odoo_instances
+
+- name: Remote PostgreSQL - Active the 'unaccent' extension on databases
+  delegate_to: "{{ item.odoo_config_db_host | default(default_odoo_config_db_host) }}"
+  remote_user: "{{ item.odoo_config_db_host_user | default(default_odoo_config_db_host_user) }}"
+  become: yes
+  become_user: postgres
+  postgresql_ext: name=unaccent db=template1
+  when: (item.odoo_config_db_host | default(default_odoo_config_db_host) ) not in [False, 'localhost', '127.0.0.1']
+        and ( item.odoo_config_unaccent | default(default_odoo_config_unaccent) )
+        and ( item.odoo_postgresql_active_unaccent | default(default_odoo_postgresql_active_unaccent) )
+  with_items: odoo_instances
+
+#- name: Local PostgreSQL - Active the 'unaccent' extension on databases
+#  become: yes
+#  become_user: postgres
+#  postgresql_ext: name=unaccent db=template1
+#  when: (item.odoo_config_db_host | default(default_odoo_config_db_host) ) in [False, 'localhost', '127.0.0.1']
+#        and ( item.odoo_config_unaccent | default(default_odoo_config_unaccent) )
+#        and ( item.odoo_postgresql_active_unaccent | default(default_odoo_postgresql_active_unaccent) )
+#  with_items: odoo_instances

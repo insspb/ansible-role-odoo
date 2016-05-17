@@ -1,0 +1,27 @@
+---
+- name: Odoo | Service configuration | Generate Odoo init script
+  template: 
+    src: "odoo-{{ item.odoo_version | default(default_odoo_version) }}.init"
+    dest: "/etc/init.d/{{ item.odoo_service | default(default_odoo_service) }}"
+    owner: root 
+    group: root 
+    mode: 0755
+    force: "{{ (item.odoo_force_config | default(default_odoo_force_config) ) and 'yes' or 'no' }}"
+    backup: yes
+  with_items: "{{ odoo_instances }}"
+
+- name: Odoo | Service configuration | Enable Odoo service
+  service: 
+    name: "{{ item.odoo_service | default(default_odoo_service) }}" 
+    enabled: yes
+    state: started
+  with_items: "{{ odoo_instances }}"
+  when: "{{ item.odoo_init | default(default_odoo_init) }} == True"
+
+- name: Odoo | Service configuration | Disable Odoo service
+  service: 
+    name: "{{ item.odoo_service | default(default_odoo_service) }}" 
+    enabled: no 
+    state: stopped
+  with_items: "{{ odoo_instances }}"
+  when: "{{ item.odoo_init | default(default_odoo_init) }} == False"
