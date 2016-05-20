@@ -37,7 +37,7 @@ default_odoo_config_admin_passwd: admin
 default_odoo_config_auto_reload: False
 default_odoo_config_csv_internal_sep: ','
 default_odoo_config_data_dir: "/home/{{ item.odoo_user | default(default_odoo_user) }}/.local/share/Odoo"
-default_odoo_config_db_host: "review-db1.anovatio.local"
+default_odoo_config_db_host: "localhost"
 default_odoo_config_db_host_user: "{{ ansible_user_id }}"
 default_odoo_config_db_maxconn: 64
 default_odoo_config_db_name: "{{ item.odoo_service | default(default_odoo_service) }}"
