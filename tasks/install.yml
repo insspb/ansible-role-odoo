@@ -60,11 +60,3 @@
 #    depth: "{{ item.odoo_repo_depth  | default(default_odoo_repo_depth) }}"
   with_items: "{{ odoo_instances }}"
   notify: Odoo | Handlers | Restart Odoo
-
-# Bugged:
-#- name: Set SSH public keys for the Odoo user
-#  authorized_key: user={{ odoo_user | default(default_odoo_user) }}
-#                  key="{{ lookup('file', item) }}"
-#  with_fileglob:
-#    - "{{ odoo_user_sshkeys }}"
-#  when: odoo_user_sshkeys is defined and odoo_user_sshkeys
