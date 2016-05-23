@@ -2,6 +2,9 @@
 
 - include: install.yml
 
+- include: custom_addons.yml
+  when: "{{ odoo_custom_addons | default('False') }}"
+
 - include: wkhtmltox.yml
 
 - include: config.yml

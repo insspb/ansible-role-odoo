@@ -1,0 +1,38 @@
+---
+
+- name: Odoo | Custom addons | Deploy SSH key  (Git)
+  become: yes
+  become_user: "{{ item.0.odoo_user }}"
+  copy:
+    src: "{{ item.1.ssh_private_key_file }}"
+    backup: True
+    dest: "{{ item.1.ssh_private_key_dest | default(default_ssh_private_key_dest) }}"
+    force: True
+    mode: 0600
+    owner: "{{ item.0.odoo_user }}"
+    group: "{{ item.0.odoo_user }}"
+  with_subelements:
+    - "{{ odoo_instances }}"
+    - odoo_custom_addons
+    - flags:
+      skip_missing: True
+  when: "{{ item.1.deploy_ssh_private_key | default('false') }}"
+
+- name: Odoo | Custom addons | Clone submodules repository (Git)
+  become: yes
+  become_user: "{{ item.0.odoo_user }}"
+  git:  
+    repo: "{{ item.1.addon_url }}"
+    dest: "{{ item.1.addon_dest | default(default_addon_dest) }}"
+    version: "{{ item.1.addon_branch  | default('master') | string }}"
+    update: "{{ item.1.update_addon | default('True') }}"
+    accept_hostkey: "{{ item.1.accept_hostkey | default('True') }}"
+    force: "{{ item.1.force_rewrite | default('False') }}"
+    key_file: "{{ item.1.key_file | default(default_ssh_private_key_dest) }}"
+    depth: "{{ item.1.repo_depth  | default(omit) }}"
+  with_subelements: 
+    - "{{ odoo_instances }}"
+    - odoo_custom_addons
+    - flags:
+      skip_missing: True  
+  notify: Odoo | Handlers | Restart Odoo

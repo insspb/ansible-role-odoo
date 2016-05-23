@@ -25,10 +25,16 @@ default_odoo_repo_update: True   # Update the working copy or not. This option i
                                  # WARNING: uncommited changes will be discarded!
 default_odoo_repo_depth: 1       # Set to 0 to clone the full history (slower)
                                  # (this option is not supported with hg)
+
+# Tasks related to custom addons
+default_addon_dest: "{{ item.0.odoo_rootdir | default(default_odoo_addons_rootdir) }}/custom_addons"
+default_odoo_addons_rootdir: "/home/{{ item.0.odoo_user | default(default_odoo_user) }}/odoo/"
+default_ssh_private_key_dest: "/home/{{ item.0.odoo_user | default(default_odoo_user) }}/.ssh/id_rsa"
 # Tasks related to PostgreSQL
 default_odoo_postgresql_set_user: True
 default_odoo_postgresql_user_role_attr: "CREATEDB,NOSUPERUSER"
 default_odoo_postgresql_active_unaccent: True
+
 # Configuration options
 default_odoo_config_addons_path:
     - "/home/{{ item.odoo_user | default(default_odoo_user) }}/odoo/server/openerp/addons"
