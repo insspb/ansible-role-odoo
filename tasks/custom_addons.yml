@@ -1,8 +1,21 @@
 ---
+- name: Odoo | Custom addons | Create SSH dir if not exist
+  become: yes
+  file:
+    state: directory
+    path: "{{ item.1.ssh_private_key_dir | default(default_ssh_private_key_dir) }}"
+    force: False
+    owner: "{{ item.0.odoo_user }}"
+    group: "{{ item.0.odoo_user }}"
+  with_subelements:
+    - "{{ odoo_instances }}"
+    - odoo_custom_addons
+    - flags:
+      skip_missing: True
+  when: "{{ item.1.deploy_ssh_private_key | default('false') }}"
 
 - name: Odoo | Custom addons | Deploy SSH key  (Git)
   become: yes
-  become_user: "{{ item.0.odoo_user }}"
   copy:
     src: "{{ item.1.ssh_private_key_file }}"
     backup: True

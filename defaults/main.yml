@@ -29,7 +29,10 @@ default_odoo_repo_depth: 1       # Set to 0 to clone the full history (slower)
 # Tasks related to custom addons
 default_addon_dest: "{{ item.0.odoo_rootdir | default(default_odoo_addons_rootdir) }}/custom_addons"
 default_odoo_addons_rootdir: "/home/{{ item.0.odoo_user | default(default_odoo_user) }}/odoo/"
-default_ssh_private_key_dest: "/home/{{ item.0.odoo_user | default(default_odoo_user) }}/.ssh/id_rsa"
+default_ssh_private_key_dir: "/home/{{ item.0.odoo_user | default(default_odoo_user) }}/.ssh"
+default_ssh_private_key_dest: "{{ default_ssh_private_key_dir }}/id_rsa"
+
+
 # Tasks related to PostgreSQL
 default_odoo_postgresql_set_user: True
 default_odoo_postgresql_user_role_attr: "CREATEDB,NOSUPERUSER"
