@@ -34,18 +34,39 @@
 - name: Odoo | Custom addons | Clone submodules repository (Git)
   become: yes
   become_user: "{{ item.0.odoo_user }}"
-  git:  
+  git:
     repo: "{{ item.1.addon_url }}"
     dest: "{{ item.1.addon_dest | default(default_addon_dest) }}"
     version: "{{ item.1.addon_branch  | default('master') | string }}"
-    update: "{{ item.1.update_addon | default('True') }}"
+    update: False
     accept_hostkey: "{{ item.1.accept_hostkey | default('True') }}"
     force: "{{ item.1.force_rewrite | default('False') }}"
     key_file: "{{ item.1.key_file | default(default_ssh_private_key_dest) }}"
     depth: "{{ item.1.repo_depth  | default(omit) }}"
-  with_subelements: 
+  with_subelements:
     - "{{ odoo_instances }}"
     - odoo_custom_addons
     - flags:
-      skip_missing: True  
+      skip_missing: True
+  notify: Odoo | Handlers | Restart Odoo
+
+- name: Odoo | Custom addons | Update submodules repository (Git)
+  become: yes
+  become_user: "{{ item.0.odoo_user }}"
+  git:
+    repo: "{{ item.1.addon_url }}"
+    dest: "{{ item.1.addon_dest | default(default_addon_dest) }}"
+    version: "{{ item.1.addon_branch  | default('master') | string }}"
+    update: True
+    accept_hostkey: "{{ item.1.accept_hostkey | default('True') }}"
+    force: "{{ item.1.force_rewrite | default('False') }}"
+    key_file: "{{ item.1.key_file | default(default_ssh_private_key_dest) }}"
+    depth: "{{ item.1.repo_depth  | default(omit) }}"
+  when: ({{ item.1.update_addon }} is defined)
+        and ({{ item.1.update_addon }} == True)
+  with_subelements:
+    - "{{ odoo_instances }}"
+    - odoo_custom_addons
+    - flags:
+      skip_missing: True
   notify: Odoo | Handlers | Restart Odoo

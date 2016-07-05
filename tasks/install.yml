@@ -48,15 +48,26 @@
   with_items: "{{ odoo_instances }}"
   register: project_path
 
-- name: Odoo | Install | Clone project repository (Git)
+- name: Odoo | Install | Clone odoo core project repository (Git)
   become: yes
   become_user: "{{ item.odoo_user | default(default_odoo_user) }}"
-  git:  
+  git:
     repo: "{{ item.odoo_repo_url | default(default_odoo_repo_url) }}"
     dest: "{{ item.odoo_repo_dest | default(default_odoo_repo_dest) }}"
     version: "{{ item.odoo_repo_rev  | default(default_odoo_repo_rev) | string }}"
-#    update: "{{ item.project_path.stat.exists == False and 'yes'
-#            or ({{ item.odoo_repo_update }} and 'yes' or 'no') }}"
-#    depth: "{{ item.odoo_repo_depth  | default(default_odoo_repo_depth) }}"
+    update: False
   with_items: "{{ odoo_instances }}"
+  notify: Odoo | Handlers | Restart Odoo
+
+- name: Odoo | Install | Update odoo core project repository (Git)
+  become: yes
+  become_user: "{{ item.odoo_user | default(default_odoo_user) }}"
+  git:
+    repo: "{{ item.odoo_repo_url | default(default_odoo_repo_url) }}"
+    dest: "{{ item.odoo_repo_dest | default(default_odoo_repo_dest) }}"
+    version: "{{ item.odoo_repo_rev  | default(default_odoo_repo_rev) | string }}"
+    update: True
+  with_items: "{{ odoo_instances }}"
+  when: ({{ item.odoo_repo_update }} is defined)
+        and ({{ item.odoo_repo_update }} == True)
   notify: Odoo | Handlers | Restart Odoo
