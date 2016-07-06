@@ -49,6 +49,7 @@
   register: project_path
 
 - name: Odoo | Install | Clone odoo core project repository (Git)
+  register: odoo_created
   become: yes
   become_user: "{{ item.odoo_user | default(default_odoo_user) }}"
   git:
