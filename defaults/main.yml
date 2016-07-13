@@ -86,7 +86,7 @@ default_odoo_config_timezone: False
 default_odoo_config_translate_modules: ['all']
 default_odoo_config_unaccent: False
 default_odoo_config_without_demo: False
-default_odoo_config_workers: 0
+default_odoo_config_workers: 2
 default_odoo_config_xmlrpc: True
 default_odoo_config_xmlrpc_interface: ''
 default_odoo_config_xmlrpc_port: 8069
