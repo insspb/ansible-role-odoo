@@ -72,7 +72,7 @@ default_odoo_config_logrotate: False
 default_odoo_config_longpolling_port: 8072
 default_odoo_config_osv_memory_age_limit: 1.0
 default_odoo_config_osv_memory_count_limit: False
-default_odoo_config_max_cron_threads: 2
+default_odoo_config_max_cron_threads: 1
 default_odoo_config_secure_cert_file: server.cert
 default_odoo_config_secure_pkey_file: server.pkey
 default_odoo_config_server_wide_modules: None
